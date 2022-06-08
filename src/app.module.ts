@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app/app.controller';
-import { AppService } from './app/app.service';
-import { TodoController } from './todo/todo.controller';
-import { TodoService } from './todo/todo.service';
+import { AppController } from './controllers/app.controller';
+import { AppService } from './services/app.service';
+import { TodoController } from './controllers/todo.controller';
+import { TodoService } from './services/todo.service';
 import { ConfigModule } from '@nestjs/config';
+import { EventStoreDbService } from './services/event-store-db.service';
 import configuration from './configuration';
 
 @Module({
@@ -13,6 +14,6 @@ import configuration from './configuration';
     }),
   ],
   controllers: [AppController, TodoController],
-  providers: [AppService, TodoService],
+  providers: [AppService, TodoService, EventStoreDbService],
 })
 export class AppModule {}
