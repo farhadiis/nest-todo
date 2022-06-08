@@ -55,10 +55,7 @@ export class EventStoreDbService {
     });
 
     for await (const resolvedEvent of subscription) {
-      console.log(
-        `Received event ${resolvedEvent.event?.revision}@${resolvedEvent.event?.streamId}`,
-      );
-      // await handleEvent(resolvedEvent);
+      console.log(resolvedEvent.event?.data);
     }
   }
 }
