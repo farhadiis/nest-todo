@@ -3,12 +3,14 @@ import {
   EventStoreDBClient,
   jsonEvent,
   JSONEventType,
+  END,
 } from '@eventstore/db-client';
 import { ConfigService } from '@nestjs/config';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class EventStoreDbService {
+  streamName = 'todo-stream';
   client;
 
   constructor(private configService: ConfigService) {}
@@ -17,6 +19,7 @@ export class EventStoreDbService {
     this.client = EventStoreDBClient.connectionString(
       this.configService.get('EVENT_STORE_URI'),
     );
+    await this.subscribe();
   }
 
   async checkConnection() {
@@ -25,7 +28,7 @@ export class EventStoreDbService {
     }
   }
 
-  async push(todoText: string, streamName = 'todo-stream') {
+  async push(todoText: string, streamName = this.streamName) {
     await this.checkConnection();
     type TodoEvent = JSONEventType<
       'TodoEvent',
@@ -44,5 +47,18 @@ export class EventStoreDbService {
     });
 
     await this.client.appendToStream(streamName, event);
+  }
+
+  private async subscribe() {
+    const subscription = this.client.subscribeToStream(this.streamName, {
+      fromRevision: END,
+    });
+
+    for await (const resolvedEvent of subscription) {
+      console.log(
+        `Received event ${resolvedEvent.event?.revision}@${resolvedEvent.event?.streamId}`,
+      );
+      // await handleEvent(resolvedEvent);
+    }
   }
 }
