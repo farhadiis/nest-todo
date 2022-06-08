@@ -8,7 +8,6 @@ export class TodoController {
 
   @Post()
   async create(@Body() createTodoDto: CreateTodoDto) {
-    console.log(createTodoDto);
-    return 'This action adds a new cat';
+    this.todoService.create(createTodoDto);
   }
 }
