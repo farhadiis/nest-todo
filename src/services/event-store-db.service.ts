@@ -8,10 +8,18 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { v4 as uuid } from 'uuid';
 
+type TodoEvent = JSONEventType<
+  'TodoEvent',
+  {
+    entityId: string;
+    todoText: string;
+  }
+>;
+
 @Injectable()
 export class EventStoreDbService {
-  streamName = 'todo-stream';
-  client;
+  private readonly streamName = 'todo-stream';
+  private client: EventStoreDBClient;
 
   constructor(private configService: ConfigService) {}
 
@@ -22,40 +30,31 @@ export class EventStoreDbService {
     await this.subscribe();
   }
 
-  async checkConnection() {
+  private async checkConnection() {
     if (!this.client) {
       throw Error('Event store db not connected.');
     }
   }
 
-  async push(todoText: string, streamName = this.streamName) {
+  async push(text: string) {
     await this.checkConnection();
-    type TodoEvent = JSONEventType<
-      'TodoEvent',
-      {
-        entityId: string;
-        todoText: string;
-      }
-    >;
-
     const event = jsonEvent<TodoEvent>({
       type: 'TodoEvent',
       data: {
         entityId: uuid(),
-        todoText: todoText,
+        todoText: text,
       },
     });
-
-    await this.client.appendToStream(streamName, event);
+    await this.client.appendToStream(this.streamName, event);
   }
 
   private async subscribe() {
-    const subscription = this.client.subscribeToStream(this.streamName, {
-      fromRevision: END,
-    });
-
-    for await (const resolvedEvent of subscription) {
-      console.log(resolvedEvent.event?.data);
-    }
+    this.client
+      .subscribeToStream<TodoEvent>(this.streamName, {
+        fromRevision: END,
+      })
+      .on('data', (resolvedEvent) => {
+        console.log(resolvedEvent.event?.data);
+      });
   }
 }
