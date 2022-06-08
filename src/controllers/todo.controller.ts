@@ -8,6 +8,6 @@ export class TodoController {
 
   @Post()
   async create(@Body() createTodoDto: CreateTodoDto) {
-    this.todoService.create(createTodoDto);
+    await this.todoService.create(createTodoDto);
   }
 }
