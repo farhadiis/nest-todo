@@ -15,7 +15,7 @@ export class EventStoreDbService {
 
   async connect() {
     this.client = EventStoreDBClient.connectionString(
-      this.configService.get('ES_DB_URI'),
+      this.configService.get('EVENT_STORE_URI'),
     );
   }
 
