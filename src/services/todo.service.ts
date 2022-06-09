@@ -4,7 +4,11 @@ import { EventStoreDbService } from './event-store-db.service';
 
 @Injectable()
 export class TodoService {
-  constructor(private eventStoreDbService: EventStoreDbService) {}
+  constructor(private readonly eventStoreDbService: EventStoreDbService) {
+    eventStoreDbService.events.subscribe((value) => {
+      console.log(value);
+    });
+  }
   async create(todo: Todo) {
     await this.eventStoreDbService.push(todo.text);
   }
