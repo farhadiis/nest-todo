@@ -8,6 +8,7 @@ import { EventStoreDbService } from './services/event-store-db.service';
 import configuration from './configuration';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigService } from '@nestjs/config';
+import { Todo, TodoSchema } from './models/todo';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ConfigService } from '@nestjs/config';
         useUnifiedTopology: true,
       }),
     }),
+    MongooseModule.forFeature([{ name: Todo.name, schema: TodoSchema }]),
   ],
   controllers: [AppController, TodoController],
   providers: [AppService, TodoService, EventStoreDbService],
