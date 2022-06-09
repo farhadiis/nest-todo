@@ -9,7 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { v4 as uuid } from 'uuid';
 import { Subject } from 'rxjs';
 
-type TodoEvent = JSONEventType<
+export type TodoEvent = JSONEventType<
   'TodoEvent',
   {
     entityId: string;
