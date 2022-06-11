@@ -16,3 +16,28 @@ import { EventStoreDbService } from './services/event-store-db.service';
     console.log(`app is listening on port ${configService.get('PORT')}`),
   );
 })();
+
+const graceful = async () => {
+  const seconds = 2;
+  console.log('verbose', `app will shut down after ${seconds} seconds.`);
+  try {
+  } catch (err) {
+    console.log(
+      'error',
+      'app was not able to graceful stop due to the following error: ' +
+        err.message,
+    );
+  }
+  await new Promise((resolve) => setTimeout(resolve, seconds * 1000));
+  process.exit(0);
+};
+
+process.on('SIGTERM', graceful);
+process.on('SIGINT', graceful);
+process.on('SIGUSR1', graceful);
+process.on('uncaughtException', function (err) {
+  console.log('error', 'uncaught exception: ' + err.message);
+  setTimeout(() => {
+    process.exit(1);
+  }, 1000);
+});
