@@ -4,6 +4,7 @@ import {
   jsonEvent,
   JSONEventType,
   END,
+  BACKWARDS,
 } from '@eventstore/db-client';
 import { ConfigService } from '@nestjs/config';
 import { v4 as uuid } from 'uuid';
@@ -42,7 +43,7 @@ export class EventStoreDbService {
     }
   }
 
-  async push(text: string) {
+  async recordEvent(text: string) {
     await this.checkConnection();
     const event = jsonEvent<TodoEvent>({
       type: 'TodoEvent',
@@ -52,5 +53,22 @@ export class EventStoreDbService {
       },
     });
     await this.client.appendToStream<TodoEvent>(this.streamName, event);
+  }
+
+  async getLastEvent(): Promise<TodoEvent> {
+    await this.checkConnection();
+    const events = this.client.readStream<TodoEvent>(this.streamName, {
+      fromRevision: END,
+      direction: BACKWARDS,
+      maxCount: 1,
+    });
+    let last;
+    for await (const resolvedEvent of events) {
+      last = resolvedEvent.event?.data;
+      if (last) {
+        break;
+      }
+    }
+    return last;
   }
 }
