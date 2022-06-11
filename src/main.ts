@@ -12,6 +12,8 @@ async function bootstrap() {
   const eventStoreDbService: EventStoreDbService = app.get(EventStoreDbService);
 
   await eventStoreDbService.connect();
-  await app.listen(configService.get('PORT'));
+  await app.listen(configService.get('PORT'), () =>
+    console.log(`app is listening on port ${configService.get('PORT')}`),
+  );
 }
 bootstrap();
