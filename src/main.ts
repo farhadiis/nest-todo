@@ -12,6 +12,7 @@ import { EventStoreDbService } from './services/event-store-db.service';
   const eventStoreDbService: EventStoreDbService = app.get(EventStoreDbService);
 
   await eventStoreDbService.connect();
+  await eventStoreDbService.subscribe();
   await app.listen(configService.get('PORT'), () =>
     console.log(`app is listening on port ${configService.get('PORT')}`),
   );

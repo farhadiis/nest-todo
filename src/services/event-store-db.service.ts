@@ -28,10 +28,13 @@ export class EventStoreDbService {
     private readonly configService: ConfigService,
   ) {}
 
-  async connect() {
+  public async connect() {
     this.client = EventStoreDBClient.connectionString(
       this.configService.get('EVENT_STORE_URI'),
     );
+  }
+
+  public async subscribe() {
     this.client
       .subscribeToStream<TodoEvent>(this.streamName, {
         fromRevision: END,
