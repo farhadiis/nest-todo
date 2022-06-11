@@ -5,7 +5,7 @@ import { Model } from 'mongoose';
 import { CommandBus } from '@nestjs/cqrs';
 import { CreateTodoCommand } from '../commands/create-todo.command';
 import { CreateTodoDto } from '../controllers/dto/create-todo.dto';
-import { TodoEvent } from './event-store-db.service';
+import { TodoCreatedEvent } from '../events/todo-created.event';
 
 @Injectable()
 export class TodoService {
@@ -18,7 +18,7 @@ export class TodoService {
     return this.commandBus.execute(new CreateTodoCommand(todo.text));
   }
 
-  async store(event: TodoEvent) {
+  async store(event: TodoCreatedEvent) {
     const createdTodo = new this.todoModel(event);
     await createdTodo.save();
     console.log('event stored in mongo. id: ' + createdTodo._id);

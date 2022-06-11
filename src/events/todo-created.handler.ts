@@ -12,7 +12,6 @@ export class TodoCreatedHandler implements IEventHandler<TodoCreatedEvent> {
   ) {}
   async handle(event: TodoCreatedEvent) {
     console.log('TodoCreatedEvent...');
-    const lastEvent = await this.eventStoreDbService.getLastEvent(); // or find by event
-    await this.todoService.store(lastEvent);
+    await this.todoService.store(event);
   }
 }
