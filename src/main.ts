@@ -4,7 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventStoreDbService } from './services/event-store-db.service';
 
-async function bootstrap() {
+(async () => {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
 
@@ -15,5 +15,4 @@ async function bootstrap() {
   await app.listen(configService.get('PORT'), () =>
     console.log(`app is listening on port ${configService.get('PORT')}`),
   );
-}
-bootstrap();
+})();
