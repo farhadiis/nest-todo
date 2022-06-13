@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EventStoreDbService } from './services/event-store-db.service';
 
@@ -14,19 +14,25 @@ import { EventStoreDbService } from './services/event-store-db.service';
   await eventStoreDbService.connect();
   await eventStoreDbService.subscribe();
   await app.listen(configService.get('PORT'), () =>
-    console.log(`app is listening on port ${configService.get('PORT')}`),
+    Logger.log(
+      `app is listening on port ${configService.get('PORT')}`,
+      'FarhadApplication',
+    ),
   );
 })();
 
 const graceful = async () => {
   const seconds = 2;
-  console.log('verbose', `app will shut down after ${seconds} seconds.`);
+  Logger.log(
+    `app will shut down after ${seconds} seconds.`,
+    'FarhadApplication',
+  );
   try {
   } catch (err) {
-    console.log(
-      'error',
+    Logger.error(
       'app was not able to graceful stop due to the following error: ' +
         err.message,
+      'FarhadApplication',
     );
   }
   await new Promise((resolve) => setTimeout(resolve, seconds * 1000));
