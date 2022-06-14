@@ -52,7 +52,7 @@ export class EventStoreDbService {
     }
   }
 
-  async recordEvent(text: string) {
+  async publish(text: string) {
     await this.checkConnection();
     const event = jsonEvent<TodoEvent>({
       type: 'TodoEvent',

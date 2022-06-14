@@ -9,6 +9,6 @@ export class CreateTodoHandler implements ICommandHandler<CreateTodoCommand> {
   async execute(command: CreateTodoCommand) {
     console.log('CreateTodoCommand...');
     const { text } = command;
-    await this.eventStoreDbService.recordEvent(text);
+    await this.eventStoreDbService.publish(text);
   }
 }
