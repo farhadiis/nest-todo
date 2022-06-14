@@ -43,7 +43,7 @@ process.on('SIGTERM', graceful);
 process.on('SIGINT', graceful);
 process.on('SIGUSR1', graceful);
 process.on('uncaughtException', function (err) {
-  console.log('error', 'uncaught exception: ' + err.message);
+  Logger.log('uncaught exception: ' + err.message, 'FarhadApplication');
   setTimeout(() => {
     process.exit(1);
   }, 1000);
